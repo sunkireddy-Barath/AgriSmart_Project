@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import Card from '../components/Card';
 import { useTranslation } from 'react-i18next';
@@ -68,12 +69,13 @@ export default function ChatAssistantScreen() {
   };
 
   return (
-    <KeyboardAvoidingView 
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={90}
-    >
-      <View style={styles.header}>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <KeyboardAvoidingView 
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={90}
+      >
+        <View style={styles.header}>
         <Text style={styles.title}>AI Chat Assistant</Text>
         <Text style={styles.subtitle}>Ask me anything about farming</Text>
       </View>
@@ -110,7 +112,8 @@ export default function ChatAssistantScreen() {
           <Ionicons name="send" size={24} color="#ffffff" />
         </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
@@ -122,7 +125,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#8b5cf6',
     padding: 20,
-    paddingTop: 50,
+    paddingTop: 20,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },

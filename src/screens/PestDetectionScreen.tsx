@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, TextInput } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import Card from '../components/Card';
 import Button from '../components/Button';
@@ -59,8 +60,9 @@ export default function PestDetectionScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <ScrollView>
+        <View style={styles.header}>
         <Text style={styles.title}>{t('pest.title')}</Text>
         <Text style={styles.subtitle}>{t('pest.subtitle')}</Text>
       </View>
@@ -137,7 +139,8 @@ export default function PestDetectionScreen() {
           </Card>
         </>
       )}
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -149,7 +152,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#8b5cf6',
     padding: 20,
-    paddingTop: 50,
+    paddingTop: 20,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },

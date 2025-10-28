@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import Card from '../components/Card';
 import { useTranslation } from 'react-i18next';
@@ -35,11 +36,12 @@ export default function WeatherScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{t('weather.title')}</Text>
-        <Text style={styles.subtitle}>{t('weather.current')}</Text>
-      </View>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <ScrollView>
+        <View style={styles.header}>
+          <Text style={styles.title}>{t('weather.title')}</Text>
+          <Text style={styles.subtitle}>{t('weather.current')}</Text>
+        </View>
 
       <Card>
         <View style={styles.currentWeather}>
@@ -101,7 +103,8 @@ export default function WeatherScreen() {
           </Text>
         </View>
       </Card>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -113,7 +116,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#3b82f6',
     padding: 20,
-    paddingTop: 50,
+    paddingTop: 20,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },

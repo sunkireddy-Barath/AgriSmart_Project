@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Switch,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Card from "../components/Card";
 import { useTranslation } from "react-i18next";
@@ -24,8 +25,9 @@ export default function ProfileScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <ScrollView>
+        <View style={styles.header}>
         <View style={styles.profileSection}>
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>FM</Text>
@@ -112,7 +114,8 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         ))}
       </Card>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -124,7 +127,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: "#22c55e",
     padding: 20,
-    paddingTop: 50,
+    paddingTop: 20,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },

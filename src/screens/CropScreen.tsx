@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import Card from '../components/Card';
 import Input from '../components/Input';
@@ -32,8 +33,9 @@ export default function CropScreen() {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <ScrollView>
+        <View style={styles.header}>
         <Text style={styles.title}>{t('crop.title')}</Text>
         <Text style={styles.subtitle}>{t('crop.subtitle')}</Text>
       </View>
@@ -111,7 +113,8 @@ export default function CropScreen() {
           </View>
         </Card>
       )}
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -123,6 +126,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#22c55e',
     padding: 20,
+    paddingTop: 20,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },

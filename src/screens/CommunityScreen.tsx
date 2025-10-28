@@ -1,12 +1,14 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import Card from '../components/Card';
 
 export default function CommunityScreen() {
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <ScrollView>
+        <View style={styles.header}>
         <Text style={styles.title}>Community Forum</Text>
         <Text style={styles.subtitle}>Share tips & experiences</Text>
       </View>
@@ -50,7 +52,8 @@ export default function CommunityScreen() {
           </View>
         </Card>
       ))}
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -62,7 +65,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#8b5cf6',
     padding: 20,
-    paddingTop: 50,
+    paddingTop: 20,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },
