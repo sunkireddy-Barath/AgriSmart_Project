@@ -1,0 +1,217 @@
+import React from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Switch,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import Card from "../components/Card";
+import { useTranslation } from "react-i18next";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { setLanguage } from "../store/slices/languageSlice";
+
+export default function ProfileScreen() {
+  const { t, i18n } = useTranslation();
+  const dispatch = useAppDispatch();
+  const { currentLanguage } = useAppSelector((state) => state.language);
+
+  const handleLanguageChange = (lang: "en" | "ta") => {
+    i18n.changeLanguage(lang);
+    dispatch(setLanguage(lang));
+  };
+
+  return (
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <View style={styles.profileSection}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>FM</Text>
+          </View>
+          <Text style={styles.userName}>Farmer Name</Text>
+          <Text style={styles.userEmail}>farmer@email.com</Text>
+        </View>
+      </View>
+
+      <Card>
+        <Text style={styles.sectionTitle}>Settings</Text>
+
+        <TouchableOpacity style={styles.settingItem}>
+          <Ionicons name="language" size={24} color="#22c55e" />
+          <View style={styles.settingContent}>
+            <Text style={styles.settingLabel}>Language</Text>
+            <View style={styles.languageButtons}>
+              <TouchableOpacity
+                style={[
+                  styles.langBtn,
+                  currentLanguage === "en" && styles.langBtnActive,
+                ]}
+                onPress={() => handleLanguageChange("en")}
+              >
+                <Text
+                  style={[
+                    styles.langBtnText,
+                    currentLanguage === "en" && styles.langBtnTextActive,
+                  ]}
+                >
+                  English
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.langBtn,
+                  currentLanguage === "ta" && styles.langBtnActive,
+                ]}
+                onPress={() => handleLanguageChange("ta")}
+              >
+                <Text
+                  style={[
+                    styles.langBtnText,
+                    currentLanguage === "ta" && styles.langBtnTextActive,
+                  ]}
+                >
+                  தமிழ்
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.settingItem}>
+          <Ionicons name="notifications" size={24} color="#3b82f6" />
+          <View style={styles.settingContent}>
+            <Text style={styles.settingLabel}>Notifications</Text>
+            <Switch
+              trackColor={{ false: "#d1d5db", true: "#22c55e" }}
+              thumbColor="#ffffff"
+              value={true}
+            />
+          </View>
+        </TouchableOpacity>
+      </Card>
+
+      <Card>
+        <Text style={styles.sectionTitle}>Quick Links</Text>
+
+        {[
+          { icon: "help-circle", label: "Help & Support", color: "#8b5cf6" },
+          { icon: "information-circle", label: "About", color: "#6b7280" },
+          {
+            icon: "shield-checkmark",
+            label: "Privacy Policy",
+            color: "#10b981",
+          },
+          { icon: "log-out", label: "Logout", color: "#ef4444" },
+        ].map((item, index) => (
+          <TouchableOpacity key={index} style={styles.linkItem}>
+            <Ionicons name={item.icon as any} size={24} color={item.color} />
+            <Text style={styles.linkLabel}>{item.label}</Text>
+            <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
+          </TouchableOpacity>
+        ))}
+      </Card>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f9fafb",
+  },
+  header: {
+    backgroundColor: "#22c55e",
+    padding: 20,
+    paddingTop: 50,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+  },
+  profileSection: {
+    alignItems: "center",
+  },
+  avatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: "#ffffff",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  avatarText: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#22c55e",
+  },
+  userName: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#ffffff",
+    marginBottom: 4,
+  },
+  userEmail: {
+    fontSize: 14,
+    color: "#dcfce7",
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#111827",
+    marginBottom: 16,
+  },
+  settingItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e7eb",
+  },
+  settingContent: {
+    flex: 1,
+    marginLeft: 16,
+  },
+  settingLabel: {
+    fontSize: 16,
+    color: "#374151",
+  },
+  languageButtons: {
+    flexDirection: "row",
+    marginTop: 8,
+    gap: 8,
+  },
+  langBtn: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#d1d5db",
+  },
+  langBtnActive: {
+    backgroundColor: "#22c55e",
+    borderColor: "#22c55e",
+  },
+  langBtnText: {
+    fontSize: 14,
+    color: "#374151",
+    fontWeight: "500",
+  },
+  langBtnTextActive: {
+    color: "#ffffff",
+    fontWeight: "600",
+  },
+  linkItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e7eb",
+  },
+  linkLabel: {
+    flex: 1,
+    fontSize: 16,
+    color: "#374151",
+    marginLeft: 16,
+  },
+});
