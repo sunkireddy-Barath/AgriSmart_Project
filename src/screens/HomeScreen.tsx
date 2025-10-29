@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Modal,
+  Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
@@ -170,33 +171,40 @@ export default function HomeScreen() {
       >
         {/* Header Section */}
         <LinearGradient
-          colors={["#22c55e", "#16a34a"]}
+          colors={["#000000", "#071840"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.header}
         >
-          <View style={styles.headerContent}>
-            <View style={styles.welcomeSection}>
-              <View style={styles.headerTop}>
+            <View style={styles.headerContent}>
+              <View style={styles.welcomeSection}>
+                <View style={styles.headerTop}>
+                  {/* Top-left small icon */}
+                  {/* Replace three-dash menu with header image */}
+                  <Image
+                    source={require("../../assets/images/header.png")}
+                    style={styles.headerImage}
+                    resizeMode="contain"
+                  />
+                  <Text style={styles.greeting}>🍃 Welcome Back!</Text>
+                </View>
+                <Text style={styles.welcomeText}>
+                  Your AI-Powered Farming Assistant
+                </Text>
+              </View>
+
+              {/* Move menu button to top-right and add label; remove white avatar */}
+              <View style={styles.avatarContainer}>
                 <TouchableOpacity
-                  style={styles.menuButton}
+                  style={styles.moreInfoButton}
                   onPress={() => setSidebarVisible(true)}
                   activeOpacity={0.7}
                 >
-                  <Ionicons name="menu" size={28} color="#ffffff" />
+                  <Ionicons name="ellipsis-vertical" size={18} color="#ffffff" />
+                  <Text style={styles.moreInfoText}>More info</Text>
                 </TouchableOpacity>
-                <Text style={styles.greeting}>Welcome Back!</Text>
-              </View>
-              <Text style={styles.welcomeText}>
-                Your AI-Powered Farming Assistant
-              </Text>
-            </View>
-            <View style={styles.avatarContainer}>
-              <View style={styles.avatarIcon}>
-                <Ionicons name="leaf" size={32} color="#22c55e" />
               </View>
             </View>
-          </View>
           
           {/* Quick Stats */}
           <View style={styles.statsContainer}>
@@ -351,8 +359,8 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#f0f9ff",
+  flex: 1,
+  backgroundColor: "#000000",
   },
   scrollView: {
     flex: 1,
@@ -366,6 +374,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
+    backgroundColor: 'transparent',
   },
   headerContent: {
     flexDirection: "row",
@@ -382,6 +391,11 @@ const styles = StyleSheet.create({
     gap: 12,
     marginBottom: 4,
   },
+  headerImage: {
+    width: 40,
+    height: 40,
+    marginRight: 8,
+  },
   menuButton: {
     width: 44,
     height: 44,
@@ -393,33 +407,56 @@ const styles = StyleSheet.create({
   greeting: {
     fontSize: 20,
     fontWeight: "600",
-    color: "#ffffff",
+    color: "#E6F7FF",
     flex: 1,
   },
   welcomeText: {
     fontSize: 14,
-    color: "#dcfce7",
+    color: "#9FD3FF",
     lineHeight: 20,
   },
   avatarContainer: {
     marginLeft: 16,
   },
+  topRightMenuButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 12,
+  },
+  moreInfoButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.18)',
+  },
+  moreInfoText: {
+    color: '#ffffff',
+    marginLeft: 8,
+    fontWeight: '600',
+    fontSize: 14,
+  },
   avatarIcon: {
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#071837",
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 4,
   },
   statsContainer: {
     flexDirection: "row",
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    backgroundColor: "rgba(30,64,175,0.12)",
     borderRadius: 16,
     padding: 12,
     alignItems: "center",
@@ -450,12 +487,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#1e293b",
+    color: "#E6F7FF",
     marginBottom: 4,
   },
   sectionSubtitle: {
     fontSize: 14,
-    color: "#64748b",
+    color: "#9FD3FF",
     marginBottom: 16,
   },
   servicesGrid: {
@@ -491,12 +528,12 @@ const styles = StyleSheet.create({
   serviceLabel: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#ffffff",
+    color: "#E6F7FF",
     marginBottom: 4,
   },
   serviceDescription: {
     fontSize: 12,
-    color: "rgba(255, 255, 255, 0.9)",
+    color: "rgba(159,211,255,0.9)",
     lineHeight: 18,
   },
   arrowContainer: {

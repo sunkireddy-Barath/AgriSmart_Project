@@ -24,15 +24,19 @@ function MainTabs() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#22c55e',
-        tabBarInactiveTintColor: '#9ca3af',
+        tabBarActiveTintColor: '#38BDF8', // bright blue
+        tabBarInactiveTintColor: '#94A3B8', // muted blue/gray
         tabBarStyle: {
-          backgroundColor: '#ffffff',
-          borderTopWidth: 1,
-          borderTopColor: '#e5e7eb',
-          paddingBottom: 5,
-          paddingTop: 5,
-          height: 60,
+          backgroundColor: '#000000',
+          borderTopWidth: 0,
+          paddingBottom: 6,
+          paddingTop: 6,
+          height: 64,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -3 },
+          shadowOpacity: 0.6,
+          shadowRadius: 8,
+          elevation: 10,
         },
       }}
     >
