@@ -180,8 +180,18 @@ export default function HomeScreen() {
               <View style={styles.welcomeSection}>
                 <View style={styles.headerTop}>
                   {/* Top-left small icon */}
+<<<<<<< HEAD
                   {/* Header image removed due to invalid format */}
                   <Text style={styles.greeting}>🍃 Welcome Back!</Text>
+=======
+                  {/* Replace three-dash menu with header image */}
+                  <Image
+                    source={require("../../assets/images/header.png")}
+                    style={styles.headerImage}
+                    resizeMode="contain"
+                  />
+                  <Text style={styles.greeting}>🍃 AgriSmart</Text>
+>>>>>>> 75a721ce314a73583c8f6dcbd9e9cb70085ef6cb
                 </View>
                 <Text style={styles.welcomeText}>
                   Your AI-Powered Farming Assistant
@@ -364,32 +374,34 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   header: {
-    paddingTop: 20,
-    paddingBottom: 24,
-    paddingHorizontal: 20,
+  paddingTop: 12,
+  paddingBottom: 16,
+  paddingHorizontal: 8,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     backgroundColor: 'transparent',
   },
   headerContent: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "flex-start",
+  marginBottom: 10,
   },
   welcomeSection: {
-    flex: 1,
+  flex: 1,
+  alignItems: 'flex-start',
   },
   headerTop: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    marginBottom: 4,
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: 'flex-start',
+  gap: 12,
+  marginBottom: 4,
   },
   headerImage: {
     width: 40,
     height: 40,
-    marginRight: 8,
+  marginRight: 6,
   },
   menuButton: {
     width: 44,
@@ -402,8 +414,9 @@ const styles = StyleSheet.create({
   greeting: {
     fontSize: 20,
     fontWeight: "600",
-    color: "#E6F7FF",
-    flex: 1,
+  color: "#E6F7FF",
+  alignSelf: 'flex-start',
+  marginLeft: -50,
   },
   welcomeText: {
     fontSize: 14,
