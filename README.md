@@ -16,7 +16,7 @@
 - **Farming Calendar**: Sowing, irrigation, and harvest reminders
 
 ### 🌐 Multilingual Support
-- Multi langugage language support
+- Multi language support
 - Voice assistant with bilingual support
 - UI and content fully translated
 
@@ -182,5 +182,6 @@ For issues and questions, please open an issue on GitHub or contact the developm
 ---
 
 **Built with ❤️ for farmers**
+
 
 
