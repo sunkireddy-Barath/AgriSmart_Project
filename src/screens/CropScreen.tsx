@@ -36,8 +36,8 @@ export default function CropScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView>
         <View style={styles.header}>
-        <Text style={styles.title}>{t('crop.title')}</Text>
-        <Text style={styles.subtitle}>{t('crop.subtitle')}</Text>
+  <Text style={styles.title}>{t('crop.title')}</Text>
+  <Text style={styles.subtitle}>{t('crop.subtitle')}</Text>
       </View>
 
       <Card>
@@ -121,10 +121,10 @@ export default function CropScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9fafb',
+    backgroundColor: '#000000',
   },
   header: {
-    backgroundColor: '#22c55e',
+    backgroundColor: '#071837',
     padding: 20,
     paddingTop: 20,
     borderBottomLeftRadius: 20,
@@ -133,32 +133,34 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: '#e6f7ff',
     marginBottom: 4,
   },
   subtitle: {
     fontSize: 14,
-    color: '#dcfce7',
+    color: '#9fbfe6',
   },
   resultTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#111827',
+    color: '#e6f7ff',
     marginBottom: 12,
   },
   cropName: {
     fontSize: 26,
     fontWeight: 'bold',
-    color: '#22c55e',
+    color: '#38bdf8',
     marginBottom: 4,
   },
   cropNameTamil: {
     fontSize: 20,
-    color: '#6b7280',
+    color: '#9aa9b8',
     marginBottom: 16,
   },
   confidenceBadge: {
-    backgroundColor: '#dcfce7',
+    backgroundColor: '#071837',
+    borderWidth: 1,
+    borderColor: '#11324a',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
@@ -166,23 +168,23 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   confidenceText: {
-    color: '#166534',
+    color: '#38bdf8',
     fontWeight: '600',
   },
   descriptionBox: {
-    backgroundColor: '#f9fafb',
+    backgroundColor: '#071837',
     padding: 16,
     borderRadius: 8,
   },
   descriptionTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#374151',
+    color: '#e6f7ff',
     marginBottom: 8,
   },
   description: {
     fontSize: 14,
-    color: '#6b7280',
+    color: '#9aa9b8',
     lineHeight: 20,
   },
 });

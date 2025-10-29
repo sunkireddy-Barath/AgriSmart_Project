@@ -6,7 +6,7 @@ import Card from '../components/Card';
 import Loader from '../components/Loader';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setPrices, setLoading } from '../store/slices/marketSlice';
-import { VictoryChart, VictoryLine, VictoryAxis, VictoryArea } from 'victory-native';
+// chart removed: victory imports no longer needed
 
 const { width } = Dimensions.get('window');
 
@@ -66,73 +66,7 @@ export default function MarketScreen() {
           <Text style={styles.cardTitle}>{t('market.trend7days')}</Text>
           <Text style={styles.cardSubtitle}>Price trend for Rice (₹/kg)</Text>
           
-          <View style={styles.chartContainer}>
-            <VictoryChart 
-              height={300} 
-              padding={{ left: 55, right: 30, top: 30, bottom: 55 }}
-              domainPadding={{ x: 25, y: 10 }}
-              width={width - 80}
-            >
-              <VictoryAxis 
-                dependentAxis
-                style={{
-                  axis: { stroke: '#94a3b8', strokeWidth: 1.5 },
-                  ticks: { stroke: '#cbd5e1', size: 5 },
-                  tickLabels: { 
-                    fill: '#64748b', 
-                    fontSize: 13,
-                    fontWeight: '600',
-                  },
-                  grid: { 
-                    stroke: '#e2e8f0', 
-                    strokeWidth: 1.5,
-                    strokeDasharray: '5,5'
-                  },
-                }}
-                tickFormat={(t) => `₹${t}`}
-                tickValues={[38, 40, 42, 44, 46, 48]}
-              />
-              <VictoryAxis 
-                style={{
-                  axis: { stroke: '#94a3b8', strokeWidth: 1.5 },
-                  ticks: { stroke: '#cbd5e1', size: 5 },
-                  tickLabels: { 
-                    fill: '#64748b', 
-                    fontSize: 12,
-                    fontWeight: '600',
-                  },
-                }}
-                tickValues={[1, 2, 3, 4, 5, 6, 7]}
-                tickFormat={['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7']}
-              />
-              
-              {/* Area fill for better visibility */}
-              <VictoryArea
-                data={chartData.map((item, index) => ({ x: index + 1, y: item.value }))}
-                style={{
-                  data: { 
-                    fill: '#dcfce7',
-                    fillOpacity: 0.5,
-                    stroke: '#22c55e',
-                    strokeWidth: 3,
-                  },
-                }}
-                interpolation="natural"
-              />
-              
-              {/* Main line */}
-              <VictoryLine
-                data={chartData.map((item, index) => ({ x: index + 1, y: item.value }))}
-                style={{
-                  data: { 
-                    stroke: '#22c55e', 
-                    strokeWidth: 4,
-                  },
-                }}
-                interpolation="natural"
-              />
-            </VictoryChart>
-          </View>
+          {/* Chart removed by request */}
           
           {/* Summary Stats */}
           <View style={styles.chartSummary}>
@@ -193,10 +127,10 @@ export default function MarketScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9fafb',
+    backgroundColor: '#000000',
   },
   header: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: '#071837',
     padding: 20,
     paddingTop: 20,
     borderBottomLeftRadius: 20,
@@ -205,22 +139,22 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: '#e6f7ff',
     marginBottom: 4,
   },
   subtitle: {
     fontSize: 14,
-    color: '#e0e7ff',
+    color: '#9fbfe6',
   },
   cardTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#111827',
+    color: '#e6f7ff',
     marginBottom: 8,
   },
   cardSubtitle: {
     fontSize: 14,
-    color: '#64748b',
+    color: '#9aa9b8',
     marginBottom: 16,
   },
   priceItem: {
@@ -244,24 +178,24 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#22c55e',
+    color: '#38bdf8',
     marginBottom: 2,
   },
   trend: {
     fontSize: 14,
-    color: '#16a34a',
+    color: '#38bdf8',
     fontWeight: '500',
   },
   chartContainer: {
     height: 340,
     marginBottom: 16,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#071837',
     borderRadius: 12,
     padding: 8,
   },
   chartSummary: {
     flexDirection: 'row',
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#071837',
     borderRadius: 12,
     padding: 16,
     justifyContent: 'space-around',
@@ -272,21 +206,21 @@ const styles = StyleSheet.create({
   summaryValue: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1e293b',
+    color: '#e6f7ff',
     marginBottom: 4,
   },
   summaryLabel: {
     fontSize: 12,
-    color: '#64748b',
+    color: '#9aa9b8',
     fontWeight: '500',
   },
   summaryDivider: {
     width: 1,
     height: 40,
-    backgroundColor: '#e2e8f0',
+    backgroundColor: '#11324a',
   },
   positiveText: {
-    color: '#22c55e',
+    color: '#38bdf8',
   },
   priceRow: {
     flexDirection: 'row',
@@ -294,7 +228,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 16,
     paddingHorizontal: 12,
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#071837',
     borderRadius: 12,
     marginBottom: 8,
   },
@@ -311,11 +245,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     width: 32,
     textAlign: 'center',
+    color: '#e6f7ff',
   },
   trendUp: {
-    color: '#16a34a',
+    color: '#38bdf8',
   },
   trendDown: {
-    color: '#dc2626',
+    color: '#ef4444',
   },
 });
