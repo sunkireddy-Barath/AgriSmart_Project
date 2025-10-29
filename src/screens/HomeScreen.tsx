@@ -180,12 +180,7 @@ export default function HomeScreen() {
               <View style={styles.welcomeSection}>
                 <View style={styles.headerTop}>
                   {/* Top-left small icon */}
-                  {/* Replace three-dash menu with header image */}
-                  <Image
-                    source={require("../../assets/images/header.png")}
-                    style={styles.headerImage}
-                    resizeMode="contain"
-                  />
+                  {/* Header image removed due to invalid format */}
                   <Text style={styles.greeting}>🍃 Welcome Back!</Text>
                 </View>
                 <Text style={styles.welcomeText}>
