@@ -172,7 +172,7 @@ export default function MarketScreen() {
   dispatch(setPrices(mapped));
       setLastUpdated(new Date().toISOString());
     } catch (e: any) {
-      // If network or parsing error, clear prices and surface nothing
+      // If network or error, clear prices and surface nothing
   dispatch(setPrices([]));
   setLastUpdated(null);
   setErrorMsg(e?.message ? String(e.message) : 'Fetch failed');

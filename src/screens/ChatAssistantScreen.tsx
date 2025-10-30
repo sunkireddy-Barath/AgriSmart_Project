@@ -20,8 +20,7 @@ const ChatAssistant: React.FC = () => {
   const scrollRef = useRef<ScrollView | null>(null);
 
   // --- Directly include your OpenAI API key ---
-  const OPENAI_KEY =
-    "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";
+  const OPENAI_KEY = OPEN_API_KEY;
 
   const sendMessage = async () => {
     if (!input.trim()) return;
