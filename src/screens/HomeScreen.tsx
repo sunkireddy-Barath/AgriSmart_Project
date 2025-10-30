@@ -22,15 +22,25 @@ export default function HomeScreen() {
   const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const [stateModalVisible, setStateModalVisible] = useState(false);
+  const [selectedState, setSelectedState] = useState<string>('Tamil Nadu');
 
-  const services = [
+  const services: Array<{
+    id: string;
+    icon: string;
+    label: string;
+    description: string;
+    color: string;
+    gradient: readonly [string, string];
+    screen: string;
+  }> = [
     {
       id: "crop",
       icon: "leaf",
       label: "Crop Recommendation",
       description: "Get AI-powered crop suggestions",
       color: "#22c55e",
-      gradient: ["#22c55e", "#16a34a"],
+  gradient: ["#22c55e", "#16a34a"] as const,
       screen: "Crop",
     },
     {
@@ -39,7 +49,7 @@ export default function HomeScreen() {
       label: "Disease Detection",
       description: "Identify plant diseases",
       color: "#ef4444",
-      gradient: ["#ef4444", "#dc2626"],
+  gradient: ["#ef4444", "#dc2626"] as const,
       screen: "DiseaseDetection",
     },
     {
@@ -48,7 +58,7 @@ export default function HomeScreen() {
       label: "Pest Detection",
       description: "Detect and control pests",
       color: "#8b5cf6",
-      gradient: ["#8b5cf6", "#7c3aed"],
+  gradient: ["#8b5cf6", "#7c3aed"] as const,
       screen: "PestDetection",
     },
     {
@@ -57,7 +67,7 @@ export default function HomeScreen() {
       label: "Market Prices",
       description: "Check live market rates",
       color: "#3b82f6",
-      gradient: ["#3b82f6", "#2563eb"],
+  gradient: ["#3b82f6", "#2563eb"] as const,
       screen: "Market",
     },
     {
@@ -66,7 +76,7 @@ export default function HomeScreen() {
       label: "Profit & Loss",
       description: "Analyze your farming costs",
       color: "#f59e0b",
-      gradient: ["#f59e0b", "#d97706"],
+  gradient: ["#f59e0b", "#d97706"] as const,
       screen: "ProfitLoss",
     },
     {
@@ -75,7 +85,7 @@ export default function HomeScreen() {
       label: "AI Assistant",
       description: "Ask farming questions",
       color: "#ec4899",
-      gradient: ["#ec4899", "#db2777"],
+  gradient: ["#ec4899", "#db2777"] as const,
       screen: "ChatAssistant",
     },
     {
@@ -84,7 +94,7 @@ export default function HomeScreen() {
       label: "Weather Forecast",
       description: "7-day weather predictions",
       color: "#06b6d4",
-      gradient: ["#06b6d4", "#0891b2"],
+  gradient: ["#06b6d4", "#0891b2"] as const,
       screen: "Weather",
     },
     {
@@ -93,7 +103,7 @@ export default function HomeScreen() {
       label: "Community",
       description: "Connect with farmers",
       color: "#14b8a6",
-      gradient: ["#14b8a6", "#0d9488"],
+  gradient: ["#14b8a6", "#0d9488"] as const,
       screen: "Community",
     },
   ];
@@ -171,7 +181,7 @@ export default function HomeScreen() {
       >
         {/* Header Section */}
         <LinearGradient
-          colors={["#000000", "#071840"]}
+          colors={["#000000", "#071840"] as const}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.header}
@@ -180,10 +190,6 @@ export default function HomeScreen() {
               <View style={styles.welcomeSection}>
                 <View style={styles.headerTop}>
                   {/* Top-left small icon */}
-<<<<<<< HEAD
-                  {/* Header image removed due to invalid format */}
-                  <Text style={styles.greeting}>🍃 Welcome Back!</Text>
-=======
                   {/* Replace three-dash menu with header image */}
                   <Image
                     source={require("../../assets/images/header.png")}
@@ -191,7 +197,6 @@ export default function HomeScreen() {
                     resizeMode="contain"
                   />
                   <Text style={styles.greeting}>🍃 AgriSmart</Text>
->>>>>>> 75a721ce314a73583c8f6dcbd9e9cb70085ef6cb
                 </View>
                 <Text style={styles.welcomeText}>
                   Your AI-Powered Farming Assistant
@@ -201,6 +206,15 @@ export default function HomeScreen() {
               {/* Move menu button to top-right and add label; remove white avatar */}
               <View style={styles.avatarContainer}>
                 <TouchableOpacity
+                  style={styles.stateButton}
+                  onPress={() => setStateModalVisible(true)}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons name="location" size={16} color="#ffffff" />
+                  <Text style={styles.stateText}>{selectedState}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
                   style={styles.moreInfoButton}
                   onPress={() => setSidebarVisible(true)}
                   activeOpacity={0.7}
@@ -209,20 +223,59 @@ export default function HomeScreen() {
                   <Text style={styles.moreInfoText}>More info</Text>
                 </TouchableOpacity>
               </View>
+
+              {/* State selector modal */}
+              <Modal
+                visible={stateModalVisible}
+                transparent
+                animationType="slide"
+                onRequestClose={() => setStateModalVisible(false)}
+              >
+                <View style={styles.stateModalOverlay}>
+                  <View style={styles.stateModalContainer}>
+                    <Text style={styles.stateModalTitle}>Select State</Text>
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                      {[
+                        'Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh','Goa','Gujarat','Haryana','Himachal Pradesh','Jharkhand','Karnataka','Kerala','Madhya Pradesh','Maharashtra','Manipur','Meghalaya','Mizoram','Nagaland','Odisha','Punjab','Rajasthan','Sikkim','Tamil Nadu','Telangana','Tripura','Uttar Pradesh','Uttarakhand','West Bengal','Andaman and Nicobar Islands','Chandigarh','Dadra and Nagar Haveli and Daman and Diu','Delhi','Jammu and Kashmir','Ladakh','Puducherry'
+                      ].map((s) => (
+                        <TouchableOpacity
+                          key={s}
+                          style={styles.stateItem}
+                          onPress={() => { setSelectedState(s); setStateModalVisible(false); }}
+                        >
+                          <Text style={styles.stateItemText}>{s}</Text>
+                        </TouchableOpacity>
+                      ))}
+                    </ScrollView>
+                    <TouchableOpacity style={styles.stateClose} onPress={() => setStateModalVisible(false)}>
+                      <Text style={styles.stateCloseText}>Close</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
             </View>
           
-          {/* Quick Stats */}
-          <View style={styles.statsContainer}>
-            <View style={styles.statCard}>
-              <Ionicons name="sunny" size={24} color="#fbbf24" />
-              <Text style={styles.statValue}>28°C</Text>
-              <Text style={styles.statLabel}>Today</Text>
+          {/* Weather / Field Metrics */}
+          <View style={styles.metricsRow}>
+            <View style={styles.metricCard}>
+              <Ionicons name="sunny" size={20} color="#fbbf24" />
+              <Text style={styles.metricValue}>28°C</Text>
+              <Text style={styles.metricLabel}>Temperature</Text>
             </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statCard}>
-              <Ionicons name="trending-up" size={24} color="#22c55e" />
-              <Text style={styles.statValue}>₹45</Text>
-              <Text style={styles.statLabel}>Rice/kg</Text>
+            <View style={styles.metricCard}>
+              <Ionicons name="speedometer" size={20} color="#60a5fa" />
+              <Text style={styles.metricValue}>12 km/h</Text>
+              <Text style={styles.metricLabel}>Wind</Text>
+            </View>
+            <View style={styles.metricCard}>
+              <Ionicons name="rainy" size={20} color="#60a5fa" />
+              <Text style={styles.metricValue}>2 mm</Text>
+              <Text style={styles.metricLabel}>Rainfall</Text>
+            </View>
+            <View style={styles.metricCard}>
+              <Ionicons name="water" size={20} color="#06b6d4" />
+              <Text style={styles.metricValue}>32%</Text>
+              <Text style={styles.metricLabel}>Moisture</Text>
             </View>
           </View>
         </LinearGradient>
@@ -243,7 +296,7 @@ export default function HomeScreen() {
                 onPress={() => navigateToScreen(service.screen)}
               >
                 <LinearGradient
-                  colors={service.gradient}
+                  colors={service.gradient as readonly [string, string]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.serviceCardContent}
@@ -468,6 +521,34 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 12,
     alignItems: "center",
+  },
+  metricsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: 'rgba(255,255,255,0.03)',
+    padding: 8,
+    borderRadius: 12,
+    marginTop: 12,
+    alignItems: 'center',
+  },
+  metricCard: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 8,
+    marginHorizontal: 4,
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    borderRadius: 10,
+  },
+  metricValue: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#E6F7FF',
+    marginTop: 4,
+  },
+  metricLabel: {
+    fontSize: 12,
+    color: '#9FD3FF',
+    marginTop: 2,
   },
   statCard: {
     flex: 1,
@@ -706,6 +787,57 @@ const styles = StyleSheet.create({
   menuContainer: {
     flex: 1,
     paddingVertical: 8,
+  },
+  stateButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    marginBottom: 8,
+  },
+  stateText: {
+    color: '#ffffff',
+    marginLeft: 8,
+    fontWeight: '600',
+    fontSize: 13,
+  },
+  stateModalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  stateModalContainer: {
+    backgroundColor: '#ffffff',
+    maxHeight: '60%',
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    padding: 16,
+  },
+  stateModalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 12,
+  },
+  stateItem: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f1f5f9',
+  },
+  stateItemText: {
+    fontSize: 16,
+    color: '#0f172a',
+  },
+  stateClose: {
+    marginTop: 12,
+    alignSelf: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  stateCloseText: {
+    color: '#2563eb',
+    fontWeight: '700',
   },
   menuItem: {
     flexDirection: "row",

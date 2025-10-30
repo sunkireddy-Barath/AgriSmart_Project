@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { queryGemini } from '../services/gemini';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import Card from '../components/Card';
@@ -23,6 +24,13 @@ export default function ChatAssistantScreen() {
     },
   ]);
   const [inputText, setInputText] = useState('');
+  const [loading, setLoading] = useState(false);
+  const scrollRef = useRef<ScrollView | null>(null);
+
+  useEffect(() => {
+    // scroll to bottom when messages change
+    scrollRef.current?.scrollToEnd({ animated: true });
+  }, [messages]);
 
   const sendMessage = () => {
     if (!inputText.trim()) return;
@@ -37,8 +45,34 @@ export default function ChatAssistantScreen() {
     setMessages([...messages, userMessage]);
     setInputText('');
 
-    // Simulate AI response
-    setTimeout(() => {
+    // Decide routing: if query is crop related, use Gemini; else use local responder
+    const lower = inputText.toLowerCase();
+    const isCropQuery = lower.includes('crop') || lower.includes('paddy') || lower.includes('rice') || lower.includes('maize') || lower.includes('wheat');
+
+    if (isCropQuery) {
+      setLoading(true);
+      queryGemini(inputText)
+        .then((response) => {
+          const aiMessage: Message = {
+            id: (Date.now() + 1).toString(),
+            text: typeof response === 'string' ? response : JSON.stringify(response),
+            isUser: false,
+            timestamp: new Date(),
+          };
+          setMessages(prev => [...prev, aiMessage]);
+        })
+        .catch(() => {
+          const aiMessage: Message = {
+            id: (Date.now() + 2).toString(),
+            text: 'Sorry, AI service failed to respond.',
+            isUser: false,
+            timestamp: new Date(),
+          };
+          setMessages(prev => [...prev, aiMessage]);
+        })
+        .finally(() => setLoading(false));
+    } else {
+      // local responder for other topics
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: generateResponse(inputText),
@@ -46,7 +80,7 @@ export default function ChatAssistantScreen() {
         timestamp: new Date(),
       };
       setMessages(prev => [...prev, aiMessage]);
-    }, 1000);
+    }
   };
 
   const generateResponse = (query: string): string => {
@@ -70,17 +104,17 @@ export default function ChatAssistantScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={90}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 100}
       >
-        <View style={styles.header}>
-        <Text style={styles.title}>AI Chat Assistant</Text>
-        <Text style={styles.subtitle}>Ask me anything about farming</Text>
-      </View>
+        <View style={styles.headerDark}>
+          <Text style={styles.title}>AI Chat Assistant</Text>
+          <Text style={styles.subtitle}>Ask me anything about farming</Text>
+        </View>
 
-      <ScrollView style={styles.messagesContainer} contentContainerStyle={styles.messagesContent}>
+  <ScrollView ref={scrollRef as any} style={styles.messagesContainer} contentContainerStyle={styles.messagesContent}>
         {messages.map((message) => (
           <View
             key={message.id}
@@ -96,9 +130,9 @@ export default function ChatAssistantScreen() {
             </View>
           </View>
         ))}
-      </ScrollView>
+        </ScrollView>
 
-      <View style={styles.inputContainer}>
+        <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
           value={inputText}
@@ -107,6 +141,7 @@ export default function ChatAssistantScreen() {
           placeholderTextColor="#9ca3af"
           multiline
           maxLength={500}
+          onFocus={() => setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 250)}
         />
         <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
           <Ionicons name="send" size={24} color="#ffffff" />
@@ -119,8 +154,8 @@ export default function ChatAssistantScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#f9fafb',
+  flex: 1,
+  backgroundColor: '#000000',
   },
   header: {
     backgroundColor: '#8b5cf6',
@@ -129,10 +164,17 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },
+  headerDark: {
+    backgroundColor: '#071840',
+    padding: 20,
+    paddingTop: 20,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+  },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color:'white',
     marginBottom: 8,
   },
   subtitle: {
@@ -140,7 +182,8 @@ const styles = StyleSheet.create({
     color: '#ddd6fe',
   },
   messagesContainer: {
-    flex: 1,
+  flex: 1,
+  backgroundColor: 'transparent',
   },
   messagesContent: {
     padding: 16,
@@ -161,11 +204,11 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   userBubble: {
-    backgroundColor: '#8b5cf6',
+  backgroundColor: '#0d9488',
     borderBottomRightRadius: 4,
   },
   aiBubble: {
-    backgroundColor: '#ffffff',
+  backgroundColor: '#071837',
     borderBottomLeftRadius: 4,
     elevation: 2,
     shadowColor: '#000',
@@ -178,35 +221,37 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   userText: {
-    color: '#ffffff',
+  color: '#E6F7FF',
   },
   aiText: {
-    color: '#374151',
+  color: '#9FD3FF',
   },
   inputContainer: {
-    flexDirection: 'row',
-    padding: 16,
-    gap: 8,
-    backgroundColor: '#ffffff',
-    borderTopWidth: 1,
-    borderTopColor: '#e5e7eb',
+  flexDirection: 'row',
+  padding: 16,
+  gap: 8,
+  backgroundColor: '#071840',
+  borderTopWidth: 0,
+  paddingBottom: 8,
+  marginBottom: 8,
   },
   input: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontSize: 14,
-    maxHeight: 100,
+  borderWidth: 0,
+  borderRadius: 24,
+  paddingHorizontal: 16,
+  paddingVertical: 12,
+  fontSize: 14,
+  maxHeight: 100,
+  color: '#E6F7FF',
+  backgroundColor: 'rgba(255,255,255,0.03)'
   },
   sendButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#8b5cf6',
-    justifyContent: 'center',
-    alignItems: 'center',
+  width: 48,
+  height: 48,
+  borderRadius: 24,
+  backgroundColor: '#22c55e',
+  justifyContent: 'center',
+  alignItems: 'center',
   },
 });
