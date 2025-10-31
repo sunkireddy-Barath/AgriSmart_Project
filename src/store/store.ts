@@ -3,6 +3,7 @@ import languageReducer from './slices/languageSlice';
 import userReducer from './slices/userSlice';
 import cropReducer from './slices/cropSlice';
 import marketReducer from './slices/marketSlice';
+import locationReducer from './slices/locationSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     user: userReducer,
     crop: cropReducer,
     market: marketReducer,
+  location: locationReducer,
   },
 });
 

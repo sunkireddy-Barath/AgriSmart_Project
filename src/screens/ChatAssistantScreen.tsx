@@ -10,6 +10,7 @@ import {
   Platform,
   ActivityIndicator,
 } from 'react-native';
+import Constants from 'expo-constants';
 
 type Msg = { from: 'user' | 'bot'; text: string };
 
@@ -19,8 +20,8 @@ const ChatAssistant: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<ScrollView | null>(null);
 
-  // --- Directly include your OpenAI API key ---
-  const OPENAI_KEY = OPEN_API_KEY;
+  // Read OpenAI key from expo config extra or environment (.env)
+  const OPENAI_KEY: string = ((Constants.manifest as any)?.extra?.OPENAI_API_KEY as string) ?? process.env.OPENAI_API_KEY ?? '';
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -29,6 +30,17 @@ const ChatAssistant: React.FC = () => {
     setMessages(prev => [...prev, { from: 'user', text: userText }]);
     setInput('');
     setLoading(true);
+
+    // guard if API key missing
+    if (!OPENAI_KEY) {
+      setMessages(prev => [
+        ...prev,
+        { from: 'bot', text: 'AI key not configured. Add OPENAI_API_KEY to .env and expose it via app config, then restart Expo (expo start -c).' },
+      ]);
+      setLoading(false);
+      scrollToEnd();
+      return;
+    }
 
     try {
       const response = await fetch('https://api.openai.com/v1/chat/completions', {

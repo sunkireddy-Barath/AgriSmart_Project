@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useAppDispatch } from '../store/hooks';
+import { setStateName } from '../store/slices/locationSlice';
 import {
   View,
   Text,
@@ -15,6 +17,7 @@ import Card from "../components/Card";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
+import indianDistricts from '../config/indianDistricts';
 
 const { width } = Dimensions.get("window");
 
@@ -22,6 +25,7 @@ export default function HomeScreen() {
   const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const dispatch = useAppDispatch();
   const [stateModalVisible, setStateModalVisible] = useState(false);
   const [selectedState, setSelectedState] = useState<string>('Tamil Nadu');
 
@@ -234,19 +238,17 @@ export default function HomeScreen() {
                 <View style={styles.stateModalOverlay}>
                   <View style={styles.stateModalContainer}>
                     <Text style={styles.stateModalTitle}>Select State</Text>
-                    <ScrollView showsVerticalScrollIndicator={false}>
-                      {[
-                        'Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh','Goa','Gujarat','Haryana','Himachal Pradesh','Jharkhand','Karnataka','Kerala','Madhya Pradesh','Maharashtra','Manipur','Meghalaya','Mizoram','Nagaland','Odisha','Punjab','Rajasthan','Sikkim','Tamil Nadu','Telangana','Tripura','Uttar Pradesh','Uttarakhand','West Bengal','Andaman and Nicobar Islands','Chandigarh','Dadra and Nagar Haveli and Daman and Diu','Delhi','Jammu and Kashmir','Ladakh','Puducherry'
-                      ].map((s) => (
-                        <TouchableOpacity
-                          key={s}
-                          style={styles.stateItem}
-                          onPress={() => { setSelectedState(s); setStateModalVisible(false); }}
-                        >
-                          <Text style={styles.stateItemText}>{s}</Text>
-                        </TouchableOpacity>
-                      ))}
-                    </ScrollView>
+                      <ScrollView showsVerticalScrollIndicator={false}>
+                        {Object.keys(indianDistricts).map((s) => (
+                          <TouchableOpacity
+                            key={s}
+                            style={styles.stateItem}
+                            onPress={() => { setSelectedState(s); setStateModalVisible(false); dispatch(setStateName(s)); }}
+                          >
+                            <Text style={styles.stateItemText}>{s}</Text>
+                          </TouchableOpacity>
+                        ))}
+                      </ScrollView>
                     <TouchableOpacity style={styles.stateClose} onPress={() => setStateModalVisible(false)}>
                       <Text style={styles.stateCloseText}>Close</Text>
                     </TouchableOpacity>

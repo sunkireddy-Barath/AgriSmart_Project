@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, Dimensions, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Dimensions, TouchableOpacity, ActivityIndicator, Modal } from 'react-native';
+import indianDistricts from '../config/indianDistricts';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import Card from '../components/Card';
@@ -16,11 +17,16 @@ export default function MarketScreen() {
   const { prices, loading } = useAppSelector((state) => state.market);
 
   const [district, setDistrict] = useState<string>('');
+  const [districtModalVisible, setDistrictModalVisible] = useState(false);
+  const [availableDistricts, setAvailableDistricts] = useState<string[]>([]);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [localLoading, setLocalLoading] = useState(false);
   // default resource id set and hidden from UI per user request
   const [resourceId, setResourceId] = useState<string>('9ef84268-d588-465a-a308-a864a43d0070');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  // read selected state from store
+  const selectedState = useAppSelector((s) => (s as any).location?.stateName) as string | null;
 
   // Helpers: parse numeric strings and normalize common units to per-kg prices
   const parseNumeric = (v: any): number | null => {
@@ -79,7 +85,40 @@ export default function MarketScreen() {
 
   useEffect(() => {
     loadMarketPrices();
+    // when selectedState changes, fetch available districts
   }, []);
+
+  useEffect(() => {
+    if (selectedState) fetchAvailableDistricts(selectedState);
+    else setAvailableDistricts([]);
+    // reset district when state changes
+    setDistrict('');
+  }, [selectedState]);
+
+  const fetchAvailableDistricts = async (stateName: string) => {
+    try {
+      const DATA_GOV_API_KEY = '579b464db66ec23bdd000001e19e51f7932a45cd5b94455207ab83ea';
+      const RESOURCE_ID = resourceId.trim();
+      if (!RESOURCE_ID) return;
+      const params = new URLSearchParams({ 'api-key': DATA_GOV_API_KEY, format: 'json', limit: '1000', fields: 'district' } as any);
+      params.append(`filters[state.keyword]`, stateName);
+      const url = `https://api.data.gov.in/resource/${RESOURCE_ID}?${params.toString()}`;
+      const res = await fetch(url);
+      if (!res.ok) return;
+      const data = await res.json();
+      const records = Array.isArray(data?.records) ? data.records : [];
+      const set = new Set<string>();
+      for (const r of records) {
+        const d = r.district || r.district_name || r.districts || r.District || null;
+        if (d) set.add(String(d).trim());
+      }
+      const arr = Array.from(set).filter(Boolean).sort((a, b) => a.localeCompare(b));
+      setAvailableDistricts(arr);
+    } catch (e) {
+      console.warn('Failed to fetch districts', e);
+      setAvailableDistricts([]);
+    }
+  };
 
   const loadMarketPrices = async () => {
     // If no district provided, keep previous behavior (simple demo)
@@ -199,13 +238,24 @@ export default function MarketScreen() {
         <Card>
           <Text style={styles.cardTitle}>Fetch Market Prices by District</Text>
             {/* resourceId is set by default and hidden from the input per requirement */}
-            <TextInput
-              placeholder="Enter district (e.g. Chennai)"
-              placeholderTextColor="#9aa9b8"
-              value={district}
-              onChangeText={setDistrict}
-              style={[styles.districtInput, { marginTop: 10 }]}
-            />
+            <TouchableOpacity style={[styles.districtInput, { marginTop: 10 }]} onPress={() => setDistrictModalVisible(true)}>
+              <Text style={{ color: district ? '#e6f7ff' : '#9aa9b8' }}>{district || (selectedState ? `Select district in ${selectedState}` : 'Select state first on Home') }</Text>
+            </TouchableOpacity>
+            {/* Inline dropdown appears directly under the input for visibility */}
+            {districtModalVisible && (
+              <View style={styles.dropdown}>
+                <ScrollView style={{ maxHeight: 240 }}>
+                  {(availableDistricts && availableDistricts.length > 0
+                    ? availableDistricts
+                    : (selectedState && indianDistricts[selectedState] ? indianDistricts[selectedState] : [])
+                  ).map((d) => (
+                    <TouchableOpacity key={d} style={styles.dropdownItem} onPress={() => { setDistrict(d); setDistrictModalVisible(false); }}>
+                      <Text style={styles.dropdownText}>{d}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            )}
             {errorMsg ? <Text style={{ color: '#ffb4b4', marginTop: 8 }}>{errorMsg}</Text> : null}
           <View style={{ flexDirection: 'row', marginTop: 8 }}>
             <TouchableOpacity style={styles.fetchButton} onPress={loadMarketPrices} activeOpacity={0.8}>
@@ -220,65 +270,36 @@ export default function MarketScreen() {
           </View>
         </Card>
 
-        <Card>
-          <Text style={styles.cardTitle}>{t('market.todayPrice')}</Text>
-          <View style={styles.priceItem}>
-            <View>
-              <Text style={styles.cropName}>Rice</Text>
-              <Text style={styles.cropTamil}>அரிசி</Text>
-            </View>
-            <View style={styles.priceInfo}>
-              <Text style={styles.price}>₹45/kg</Text>
-              <Text style={styles.trend}>↑ +5%</Text>
-            </View>
-          </View>
-        </Card>
-
-        <Card>
-          <Text style={styles.cardTitle}>{t('market.trend7days')}</Text>
-          <Text style={styles.cardSubtitle}>Price trend for Rice (₹/kg)</Text>
-          
-          {/* Chart removed by request */}
-          
-          {/* Summary Stats */}
-          <View style={styles.chartSummary}>
-            <View style={styles.summaryItem}>
-              <Text style={styles.summaryValue}>₹40</Text>
-              <Text style={styles.summaryLabel}>Low</Text>
-            </View>
-            <View style={styles.summaryDivider} />
-            <View style={styles.summaryItem}>
-              <Text style={styles.summaryValue}>₹42.8</Text>
-              <Text style={styles.summaryLabel}>Avg</Text>
-            </View>
-            <View style={styles.summaryDivider} />
-            <View style={styles.summaryItem}>
-              <Text style={styles.summaryValue}>₹45</Text>
-              <Text style={styles.summaryLabel}>High</Text>
-            </View>
-            <View style={styles.summaryDivider} />
-            <View style={styles.summaryItem}>
-              <Text style={[styles.summaryValue, styles.positiveText]}>+12.5%</Text>
-              <Text style={styles.summaryLabel}>Change</Text>
-            </View>
-          </View>
-        </Card>
+  {/* Today's price and 7-day trend cards removed — using fetched market data instead */}
 
         <Card>
           <Text style={styles.cardTitle}>All Crops</Text>
           {prices && prices.length > 0 ? (
-            prices.map((p: any, idx: number) => (
-              <View key={idx} style={styles.priceRow}>
-                <View style={styles.cropInfo}>
-                  <Text style={styles.cropName}>{p.commodity}</Text>
-                  <Text style={styles.cropTamil}>{p.variety || ''}</Text>
+            // sort by computed per-kg price (highest first)
+            [...prices]
+              .slice()
+              .sort((a: any, b: any) => (b.price_per_kg || 0) - (a.price_per_kg || 0))
+              .map((p: any, idx: number) => (
+                <View key={idx} style={styles.priceRow}>
+                  <View style={styles.cropInfo}>
+                    <Text style={styles.cropName}>{p.commodity}</Text>
+                    {!!p.variety && <Text style={styles.cropTamil}>{p.variety}</Text>}
+                  </View>
+
+                  <View style={[styles.priceRight, styles.priceColumn]}>
+                    {p.price_per_kg != null ? (
+                      <>
+                        <Text style={styles.price}>₹{Number(p.price_per_kg).toFixed(2)}/kg</Text>
+                        {p.price_per_kg_approx ? (
+                          <Text style={{ color: '#f59e0b', fontSize: 12, marginTop: 4 }}>approx</Text>
+                        ) : null}
+                      </>
+                    ) : (
+                      <Text style={{ color: '#9aa9b8' }}>—</Text>
+                    )}
+                  </View>
                 </View>
-                <View style={styles.priceRight}>
-                  <Text style={styles.price}>{p.modal_price ? `₹${p.modal_price}/${p.unit || 'kg'}` : p.min_price ? `₹${p.min_price}/${p.unit || 'kg'}` : '—'}</Text>
-                  <Text style={styles.trendIcon}>{p.arrival_date ? new Date(p.arrival_date).toLocaleDateString() : ''}</Text>
-                </View>
-              </View>
-            ))
+              ))
           ) : (
             <Text style={{ color: '#9aa9b8', paddingVertical: 12 }}>No prices loaded. Enter a district and tap Fetch.</Text>
           )}
@@ -394,6 +415,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 10,
   },
+  dropdown: {
+    backgroundColor: '#071837',
+    borderRadius: 8,
+    marginTop: 8,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderWidth: 1,
+    borderColor: '#11324a',
+  },
+  dropdownItem: {
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#0b2733',
+  },
+  dropdownText: {
+    color: '#e6f7ff',
+    fontSize: 14,
+  },
   fetchButton: {
     backgroundColor: '#2563eb',
     paddingVertical: 10,
@@ -423,6 +462,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+  },
+  priceColumn: {
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    minWidth: 100,
   },
   trendIcon: {
     fontSize: 24,
